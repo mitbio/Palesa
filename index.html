@@ -108,11 +108,13 @@
         <span class="close-btn" onclick="closePopup()">&times;</span>
         <h2 style="color:white">Join Our Newsletter!</h2>
         <p style="color:white">Stay updated with the latest from me your girl palesa.</p>
-        <form id="newsletter-form">
-            <input type="email" id="newsletter-email" placeholder="Enter your email" required>
-            <input type="text" id="newsletter-email" placeholder="Enter your Fullname" required>
+        <form id="contactForm" class="newsletter-form">
+            <input type="text" id="name" placeholder="Enter your Fullname" required>
+            <input type="email" id="email" placeholder="Enter your email" required>
+		<textarea id="message" placeholder="Your Message" required></textarea>
 			<button type="submit" class="subscribe-btn">Subscribe Now</button>
         </form>
+	  <p id="responseMessage"></p>  
     </div>
 </div>
 
@@ -176,13 +178,13 @@
     margin-bottom: 20px;
 }
 
-#newsletter-form {
+.newsletter-form {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#newsletter-form input {
+.newsletter-form input {
     width: 100%;
     padding: 12px;
     border-radius: 5px;
@@ -232,19 +234,50 @@ function closePopup() {
 }
 
 // Handle the form submission
-document.getElementById('newsletter-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.querySelector('.newsletter-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form submission
+
     var email = document.getElementById('newsletter-email').value;
 
     if (email) {
         alert('Thank you for subscribing!');
         document.getElementById('newsletter-popup').style.display = 'none';
-        document.getElementById('newsletter-form').reset();
+        this.reset(); // Reset the form properly
     } else {
         alert('Please enter a valid email.');
     }
 });
 
+ document.getElementById("contactForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent page refresh
+
+    // Get form data
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let message = document.getElementById("message").value;
+
+    // Replace with your Google Apps Script Web App URL
+    let url = "https://script.google.com/macros/s/AKfycbwyHfFu5Wq_KYxF_QsVDiI5O91m9kiKHSKgGarVfcOTHR0QZ1lx_3uhlia9z-j39dkj/exec";  
+
+    // Prepare data for sending
+    let data = { name: name, email: email, message: message };
+
+    // Send data using Fetch API
+    fetch(url, {
+      method: "POST",
+      mode: "no-cors", // Avoid CORS issues
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(() => {
+      document.getElementById("responseMessage").textContent = "Message sent successfully!";
+      document.getElementById("contactForm").reset();
+    })
+    .catch(error => {
+      document.getElementById("responseMessage").textContent = "Error sending message.";
+      console.error("Error:", error);
+    });
+  });
 
 </script>
 <img style=" display: block; margin:20px auto 0 auto;width:70%;max-width:600px;height:38vh" src="ddddd.png"/>
